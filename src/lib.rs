@@ -917,6 +917,8 @@ uniffi::setup_scaffolding!();
 
 #[cfg(feature = "uniffi")]
 mod uniffi_core_impl {
+    use std::alloc::System;
+
     use super::*;
 
     use uniffi_core::{
@@ -948,7 +950,10 @@ mod uniffi_core_impl {
             Ok(Timestamp::UNIX_EPOCH + Duration::new(seconds, nanos))
         }
 
-        const TYPE_ID_META: MetadataBuffer = MetadataBuffer::from_code(metadata::codes::TYPE_SYSTEM_TIME);
+        const TYPE_ID_META: MetadataBuffer = MetadataBuffer::from_code(metadata::codes::TYPE_CUSTOM)
+            .concat_str("iso8601_timestamp::Timestamp")
+            .concat_str("Timestamp")
+            .concat(<Vec<u8> as uniffi_core::Lower<Vec<u8>>>::TYPE_ID_META);
     }
 
     #[cfg(test)]
